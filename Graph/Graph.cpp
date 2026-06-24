@@ -5,31 +5,51 @@
 
 using namespace std;
 
+int VertexX = 0;
+int VertexY = 0;
+int Num = 0;
+int WormCount = 0;
+int Matrix[50][50] = {};
+int Matrixbool[50][50] = {};
+
+
+
+void DFS(int i, int j)
+{
+    const int DirectionY[4] = { -1, 1,  0, 0 };
+    const int DirectionX[4] = { 0, 0, -1, 1 };
+
+    for (int dir = 0; dir < 4; ++dir)
+    {
+        int NextY = i + DirectionY[dir];
+        int NextX = j + DirectionX[dir];
+
+        Matrixbool[i][j] = true;
+
+        if (NextY < 0 || NextY >= VertexY || NextX < 0 || NextX >= VertexX)
+        {
+            continue;
+        }
+
+        if (Matrix[NextY][NextX] == 1 && Matrixbool[NextY][NextX] == false)
+        {
+            WormCount--;
+            Matrixbool[NextY][NextX] = true;
+            DFS(NextY, NextX);
+            continue;
+        }
+
+    }
+}
 
 
 int main()
 {
-	int VertexX = 0;
-	int VertexY = 0;
-	int Num = 0;
+	
 
 	cin >> VertexX;
 	cin >> VertexY;
 	cin >> Num;
-
-	int** Matrix = new int*[VertexY];
-
-	for (int i = 0; i < VertexY; i++)
-	{
-		Matrix[i] = new int[VertexX];
-	}
-
-    bool** Matrixbool = new bool* [VertexY];
-
-    for (int i = 0; i < VertexY; i++)
-    {
-        Matrixbool[i] = new bool[VertexX];
-    }
 
 
     for (int i = 0; i < VertexY; i++)
@@ -71,38 +91,15 @@ int main()
         cout << endl;
     }
 
-    int WormCount = Num;
+    WormCount = Num;
 
     for (int i = 0; i < VertexY; i++)
     {
         for (int j = 0; j < VertexX; j++)
         {
-            //배추 찾으면 탐색 시작
             if (Matrix[i][j] == 1)
             {
-                const int DirectionY[4] = { -1, 1,  0, 0 };
-                const int DirectionX[4] = { 0, 0, -1, 1 };
-
-                for (int dir = 0; dir < 4; ++dir)
-                {
-                    int NextY = i + DirectionY[dir];
-                    int NextX = j + DirectionX[dir];
-
-                    Matrixbool[i][j] = true;
-
-                    if (NextY < 0 || NextY >= VertexY || NextX < 0 || NextX >= VertexX)
-                    {
-                        continue;
-                    }
-
-                    if (Matrix[NextY][NextX] == 1 && Matrixbool[NextY][NextX] == false)
-                    {
-                        WormCount--;
-                        Matrixbool[NextY][NextX] = true;
-                        continue;
-                    }
-          
-                }
+                DFS(i, j);
             }
         }
     }
